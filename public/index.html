@@ -81,6 +81,52 @@
     </div>
   </div>
 
+  
+    <section class="persona-teatro" id="persona">
+    <div class="persona-conteudo">
+      <h1 class="persona-titulo">
+        NOSSO SITE E<br>COMO FUNCIONA?
+      </h1>
+      
+      <p class="persona-texto">
+       Use o simulador para entender como a BrewTech monitora o nível de líquido em cada tanque da sua produção. Insira a capacidade do tanque, o volume atual e veja como o sistema classifica o estado de enchimento — crítico, atenção ou normal — e qual alerta seria disparado para a equipe.
+      </p>
+
+      <div class="persona-accordion-container">
+        
+        <div class="accordion-row">
+          <span>Como o sistema lida com a formação de espuma?</span>
+          <span class="accordion-icon">+</span>
+        </div>
+        
+        <div class="accordion-content">
+          <p>
+            A formação de espuma densa durante a fermentação é um dos maiores desafios técnicos. Nosso sistema utiliza algoritmos de filtragem de sinal no microcontrolador para ignorar os ecos falsos gerados pela superfície da espuma. 
+            <br><br>
+            Isso garante que os sensores leiam com precisão apenas a altura real do líquido (cerveja), evitando erros de leitura que poderiam interromper o processo produtivo ou causar transbordamentos na planta.
+          </p>
+        </div>
+
+        <div class="accordion-row">
+          <span>Segurança física e automação contra falhas</span>
+          <span class="accordion-icon">+</span>
+        </div>
+        
+        <div class="accordion-content">
+          <p>
+            Além do monitoramento contínuo, a arquitetura integra chaves de nível capacitivas no topo dos tanques. Caso ocorra uma falha crítica na leitura principal, esses sensores atuam como uma trava física de segurança de resposta imediata, cortando a alimentação das bombas de entrada no mesmo instante para mitigar riscos de desperdício de insumos.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="persona-imagem">
+      <img src="./assets/imgs/images (2).jpeg" alt="Tanque de cervejaria" />
+    </div>
+  </section>
+
+
   <!-- FOOTER -->
   <div class="footer">
     <div class="container">
@@ -90,3 +136,20 @@
 
 </body>
 </html>
+<script>
+    document.querySelectorAll('.accordion-row').forEach(row => {
+  row.addEventListener('click', function() {
+    // rever o this.next depois
+    const content = this.nextElementSibling;
+    const icon = this.querySelector('.accordion-icon');
+
+    content.classList.toggle('active');
+
+    if (content.classList.contains('active')) {
+      icon.textContent = '−';
+    } else {
+      icon.textContent = '+';
+    }
+  });
+});
+</script>

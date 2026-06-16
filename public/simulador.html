@@ -1,72 +1,138 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>BrewTech | Simulador</title>
-
   <script src="./js/sessao.js"></script>
-
   <link rel="stylesheet" href="./css/estilo.css">
+  <link rel="stylesheet" href="./css/simulador.css">
   <link rel="icon" href="./assets/icon/favicon2.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
-
 <body>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="container">
-      <h1 class="titulo">Brew<span>Tech</span></h1>
-      <ul class="navbar">
-        <li>
-          <a href="./index.html">Inicial</a>
-        </li>
-        <li class="agora">Simulador</li>
-        <li>|</li>
-        <li>
-          <a href="./login.html">Login</a>
-        </li>
-        <li>
-          <a href="./cadastro.html">Cadastro</a>
-        </li>
-      </ul>
+  <div class="dashboard-container">
+    <div class="tank-section">
+        <h3 style="margin-bottom: 20px; color: #a0a0b0;">Fermentador FAT-04</h3>
+        <div class="tank-outer">
+            <div id="waveSensor" class="wave-line wave-active"></div>
+            <div id="liquidLevel" class="liquid"></div>
+            <div id="pressureSensor" class="pressure-glow"></div>
+        </div>
+    </div>
+
+    <div class="controls-section">
+        <div>
+            <h2>Monitoramento IoT</h2>
+            <div class="form-group">
+                <label for="sensorSelect">Tipo de Sensor Ativo:</label>
+                <select id="sensorSelect">
+                    <option value="ultrasonic">Ultrassônico (Topo)</option>
+                    <option value="hydrostatic">Pressão Hidrostática (Base)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ações Manuais (Simulação de Válvulas):</label>
+                <div class="btn-group">
+                    <button class="btn-fill" id="btnFill">Encher</button>
+                    <button class="btn-drain" id="btnDrain">Esvaziar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="telemetry-panel" id="telemetryPanel">
+            <div class="data-row">
+                <span>Nível Atual:</span>
+                <span class="data-val" id="txtPercent">50%</span>
+            </div>
+            <div class="data-row">
+                <span>Volume Estimado:</span>
+                <span class="data-val" id="txtVolume">1000 L</span>
+            </div>
+            <div class="data-row">
+                <span>Status do Sistema:</span>
+                <span class="status-badge status-normal" id="txtStatus">Normal</span>
+            </div>
+        </div>
     </div>
   </div>
 
-  <!-- SIMULADOR -->
-  <div class="simulador">
-    <div class="container">
-      <h2>Simulador de Tanques</h2>
-      <p>
-        Use o simulador para entender como a BrewTech monitora o nível de líquido em cada tanque da sua produção.
-        Insira a capacidade do tanque, o volume atual e veja como o sistema classifica o estado de enchimento — 
-        crítico, atenção ou normal — e qual alerta seria disparado para a equipe.
-      </p>
-      <p>
-        O monitoramento é feito por sensores ultrassônicos instalados na tampa de cada tanque. 
-        A leitura é enviada a cada 30 segundos para a plataforma, que calcula o percentual de ocupação 
-        e registra o histórico de variação. Isso permite identificar vazamentos, consumo acelerado 
-        ou paradas na linha de envase antes que virem problema.
-      </p>
-      <p>
-        No painel real, você visualiza todos os tanques simultaneamente — fermentadores, 
-        tanques de maturação, reservatórios de água e silos de malte — com código de cor por nível 
-        e histórico em gráfico. O simulador abaixo demonstra a lógica de classificação de estado.
-      </p>
-    </div>
-  </div>
+  <script>
+    // Parâmetros do sistema
+    let currentLevelPercent = 50; 
+    const maxCapacityLiters = 2000;
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="container">
-      <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
-    </div>
-  </div>
+    // Elementos do DOM
+    const liquidLevel = document.getElementById('liquidLevel');
+    const waveSensor = document.getElementById('waveSensor');
+    const pressureSensor = document.getElementById('pressureSensor');
+    const sensorSelect = document.getElementById('sensorSelect');
+    
+    const txtPercent = document.getElementById('txtPercent');
+    const txtVolume = document.getElementById('txtVolume');
+    const txtStatus = document.getElementById('txtStatus');
+    const telemetryPanel = document.getElementById('telemetryPanel');
+
+    const btnFill = document.getElementById('btnFill');
+    const btnDrain = document.getElementById('btnDrain');
+
+    // Atualiza a interface gráfica e os dados textuais
+    function updateDashboard() {
+        // 1. Atualiza a altura do div de líquido
+        liquidLevel.style.height = `${currentLevelPercent}%`;
+
+        // 2. Calcula e atualiza o volume
+        const calculatedVolume = Math.round((currentLevelPercent / 100) * maxCapacityLiters);
+        txtPercent.textContent = `${currentLevelPercent}%`;
+        txtVolume.textContent = `${calculatedVolume} L`;
+
+        // 3. Regras de Negócio / Alertas de nível crítico
+        if (currentLevelPercent > 85) {
+            txtStatus.textContent = "Alerta Alto";
+            txtStatus.className = "status-badge status-alert";
+            telemetryPanel.style.borderLeftColor = "#e63946";
+        } else if (currentLevelPercent < 15) {
+            txtStatus.textContent = "Alerta Baixo";
+            txtStatus.className = "status-badge status-alert";
+            telemetryPanel.style.borderLeftColor = "#e63946";
+        } else {
+            txtStatus.textContent = "Normal";
+            txtStatus.className = "status-badge status-normal";
+            telemetryPanel.style.borderLeftColor = "#2a9d8f";
+        }
+    }
+
+    // Gerencia a troca de visualização dos sensores
+    sensorSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'ultrasonic') {
+            waveSensor.classList.add('wave-active');
+            pressureSensor.classList.remove('pressure-active');
+        } else {
+            waveSensor.classList.remove('wave-active');
+            pressureSensor.classList.add('pressure-active');
+        }
+    });
+
+    // Eventos dos botões de simulação
+    btnFill.addEventListener('click', () => {
+        if (currentLevelPercent < 100) {
+            currentLevelPercent = Math.min(currentLevelPercent + 5, 100);
+            updateDashboard();
+        }
+    });
+
+    btnDrain.addEventListener('click', () => {
+        if (currentLevelPercent > 0) {
+            currentLevelPercent = Math.max(currentLevelPercent - 5, 0);
+            updateDashboard();
+        }
+    });
+
+    // Inicialização do estado do sistema
+    updateDashboard();
+  </script>
 
 </body>
 </html>
