@@ -1,81 +1,354 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Monitoramento de Tanque - Cervejaria</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <title>AquaTech | Simulador</title>
+        body {
+            background-color: #1e1e24;
+            color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    <script src="./js/sessao.js"></script>
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background-color: #2a2a32;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+        }
 
-    <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="icon" href="./assets/icon/favicon2.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Coluna do Tanque */
+        .tank-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #222229;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .tank-outer {
+            width: 160px;
+            height: 300px;
+            border: 4px solid #8e9aaf;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            background-color: #1a1a20;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .liquid {
+            width: 100%;
+            height: 50%; /* Controlado pelo JS */
+            background: linear-gradient(to top, #d4a373, #e9c46a);
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        /* Espuma da Cerveja */
+        .liquid::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-color: #f4f1de;
+            border-radius: 4px;
+        }
+
+        /* Sensor Ultrassônico (Onda) */
+        .wave-line {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 15px solid rgba(58, 125, 68, 0);
+            display: none;
+        }
+
+        @keyframes pulse-wave {
+            0% { border-top-color: rgba(0, 180, 216, 0.8); width: 10px; height: 10px; }
+            100% { border-top-color: rgba(0, 180, 216, 0); width: 80px; height: 200px; }
+        }
+
+        .wave-active {
+            display: block;
+            animation: pulse-wave 1.5s infinite linear;
+        }
+
+        /* Sensor de Pressão Hidrostática (Destaque na base) */
+        .pressure-glow {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 15px;
+            background-color: rgba(230, 57, 70, 0);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .pressure-active {
+            background-color: rgba(230, 57, 70, 0.4);
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.6);
+        }
+
+        /* Coluna de Controles e Telemetria */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #e9c46a;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #a0a0b0;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            background-color: #3a3a45;
+            border: 1px solid #4e4e5a;
+            color: white;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-fill { background-color: #2a9d8f; color: white; }
+        .btn-fill:hover { background-color: #21867a; }
+
+        .btn-drain { background-color: #e76f51; color: white; }
+        .btn-drain:hover { background-color: #d65d40; }
+
+        /* Painel de Dados */
+        .telemetry-panel {
+            background-color: #222229;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3a7d44;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #2d2d38;
+        }
+
+        .data-row:last-child { border-bottom: none; }
+
+        .data-val {
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .status-normal { background-color: #2a9d8f; color: white; }
+        .status-alert { background-color: #e63946; color: white; }
+    </style>
 </head>
-
 <body>
 
-    <!--header inicio-->
-    <div class="header">
-        <div class="container">
-            <h1 class="titulo">AquaTech</h1>
-            <ul class="navbar">
-                <li>
-                    <a href="./index.html">Inicial</a>
-                </li>
-                <li class="agora">Simulador</li>
-                <li>|</li>
-                <li>
-                    <a href="./login.html">Login</a>
-                </li>
-                <li>
-                    <a href="./login.html">Cadastro</a>
-                </li>
-            </ul>
+<div class="dashboard-container">
+    
+    <div class="tank-section">
+        <h3 style="margin-bottom: 20px; color: #a0a0b0;">Fermentador FAT-04</h3>
+        
+        <div class="tank-outer">
+            <div id="waveSensor" class="wave-line wave-active"></div>
+            
+            <div id="liquidLevel" class="liquid"></div>
+            
+            <div id="pressureSensor" class="pressure-glow"></div>
         </div>
     </div>
 
+    <div class="controls-section">
+        <div>
+            <h2>Monitoramento IoT</h2>
+            
+            <div class="form-group">
+                <label for="sensorSelect">Tipo de Sensor Ativo:</label>
+                <select id="sensorSelect">
+                    <option value="ultrasonic">Ultrassônico (Topo)</option>
+                    <option value="hydrostatic">Pressão Hidrostática (Base)</option>
+                </select>
+            </div>
 
-    <!-- simulador inicio -->
-    <div class="simulador">
-        <div class="container">
-            <h2>Simulador</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium tempora architecto sint fugit
-                dolorum? Ipsum laborum magnam similique labore, voluptate amet reprehenderit rem ab blanditiis quisquam
-                laboriosam eaque alias. Reiciendis. Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Accusantium tempora architecto sint fugit dolorum? Ipsum laborum magnam similique labore, voluptate amet
-                reprehenderit rem ab blanditiis quisquam laboriosam eaque alias. Reiciendis.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium tempora architecto sint fugit
-                dolorum? Ipsum laborum magnam similique labore, voluptate amet reprehenderit rem ab blanditiis quisquam
-                laboriosam eaque alias. Reiciendis. Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Accusantium tempora architecto sint fugit dolorum? Ipsum laborum magnam similique labore, voluptate amet
-                reprehenderit rem ab blanditiis quisquam laboriosam eaque alias. Reiciendis.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium tempora architecto sint fugit
-                dolorum? Ipsum laborum magnam similique labore, voluptate amet reprehenderit rem ab blanditiis quisquam
-                laboriosam eaque alias. Reiciendis. Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Accusantium tempora architecto sint fugit dolorum? Ipsum laborum magnam similique labore, voluptate amet
-                reprehenderit rem ab blanditiis quisquam laboriosam eaque alias. Reiciendis.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium tempora architecto sint fugit
-                dolorum? Ipsum laborum magnam similique labore, voluptate amet reprehenderit rem ab blanditiis quisquam
-                laboriosam eaque alias. Reiciendis. Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Accusantium tempora architecto sint fugit dolorum? Ipsum laborum magnam similique labore, voluptate amet
-                reprehenderit rem ab blanditiis quisquam laboriosam eaque alias. Reiciendis.</p>
+            <div class="form-group">
+                <label>Ações Manuais (Simulação de Válvulas):</label>
+                <div class="btn-group">
+                    <button class="btn-fill" id="btnFill">Encher</button>
+                    <button class="btn-drain" id="btnDrain">Esvaziar</button>
+                </div>
+            </div>
+        </div>
 
+        <div class="telemetry-panel" id="telemetryPanel">
+            <div class="data-row">
+                <span>Nível Atual:</span>
+                <span class="data-val" id="txtPercent">50%</span>
+            </div>
+            <div class="data-row">
+                <span>Volume Estimado:</span>
+                <span class="data-val" id="txtVolume">1000 L</span>
+            </div>
+            <div class="data-row">
+                <span>Status do Sistema:</span>
+                <span class="status-badge status-normal" id="txtStatus">Normal</span>
+            </div>
         </div>
     </div>
-    <!-- simulador fim -->
+</div>
 
-    <!--footer inicio-->
-    <div class="footer">
-        <div class="container">
-            <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
-        </div>
-    </div>
-    <!--footer fim-->
+<script>
+    // Parâmetros do sistema
+    let currentLevelPercent = 50; 
+    const maxCapacityLiters = 2000;
 
+    // Elementos do DOM
+    const liquidLevel = document.getElementById('liquidLevel');
+    const waveSensor = document.getElementById('waveSensor');
+    const pressureSensor = document.getElementById('pressureSensor');
+    const sensorSelect = document.getElementById('sensorSelect');
+    
+    const txtPercent = document.getElementById('txtPercent');
+    const txtVolume = document.getElementById('txtVolume');
+    const txtStatus = document.getElementById('txtStatus');
+    const telemetryPanel = document.getElementById('telemetryPanel');
 
+    const btnFill = document.getElementById('btnFill');
+    const btnDrain = document.getElementById('btnDrain');
+
+    // Atualiza a interface gráfica e os dados textuais
+    function updateDashboard() {
+        // 1. Atualiza a altura do div de líquido
+        liquidLevel.style.height = `${currentLevelPercent}%`;
+
+        // 2. Calcula e atualiza o volume
+        const calculatedVolume = Math.round((currentLevelPercent / 100) * maxCapacityLiters);
+        txtPercent.textContent = `${currentLevelPercent}%`;
+        txtVolume.textContent = `${calculatedVolume} L`;
+
+        // 3. Regras de Negócio / Alertas de nível crítico
+        if (currentLevelPercent > 85) {
+            txtStatus.textContent = "Alerta Alto";
+            txtStatus.className = "status-badge status-alert";
+            telemetryPanel.style.borderLeftColor = "#e63946";
+        } else if (currentLevelPercent < 15) {
+            txtStatus.textContent = "Alerta Baixo";
+            txtStatus.className = "status-badge status-alert";
+            telemetryPanel.style.borderLeftColor = "#e63946";
+        } else {
+            txtStatus.textContent = "Normal";
+            txtStatus.className = "status-badge status-normal";
+            telemetryPanel.style.borderLeftColor = "#2a9d8f";
+        }
+    }
+
+    // Gerencia a troca de visualização dos sensores
+    sensorSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'ultrasonic') {
+            waveSensor.classList.add('wave-active');
+            pressureSensor.classList.remove('pressure-active');
+        } else {
+            waveSensor.classList.remove('wave-active');
+            pressureSensor.classList.add('pressure-active');
+        }
+    });
+
+    // Eventos dos botões de simulação
+    btnFill.addEventListener('click', () => {
+        if (currentLevelPercent < 100) {
+            currentLevelPercent = Math.min(currentLevelPercent + 5, 100);
+            updateDashboard();
+        }
+    });
+
+    btnDrain.addEventListener('click', () => {
+        if (currentLevelPercent > 0) {
+            currentLevelPercent = Math.max(currentLevelPercent - 5, 0);
+            updateDashboard();
+        }
+    });
+
+    // Inicialização do estado do sistema
+    updateDashboard();
+</script>
 </body>
-
 </html>
