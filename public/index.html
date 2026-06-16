@@ -1,124 +1,92 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AquaTech | Página Inicial</title>
+  <title>BrewTech | Monitoramento de Tanques</title>
 
-    <script src="./js/sessao.js"></script>
+  <script src="./js/sessao.js"></script>
 
-    <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="icon" href="./assets/icon/favicon2.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" href="./css/estilo.css">
+  <link rel="icon" href="./assets/icon/favicon2.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 
 <body>
-    <div class="header">
-      <div class="container">
-        <h1 class="titulo">AquaTech</h1>
-        <ul class="navbar">
-          <li class="agora">
-            <a href="#">Inicial</a>
-          </li>
-          <li>
-            <a href="simulador.html">Simulador</a>
-          </li>
-          <li>|</li>
-          <li>
-            <a href="login.html">Login</a>
-          </li>
-          <li>
-            <a href="cadastro.html">Cadastro</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  
-    <div class="banner">
-      <div class="container">
-        <p>Preservando <span>hoje</span> para existirem <span>amanhã</span>.</p>
-      </div>
-    </div>
-  
-    <div class="social">
-      <div class="container">
-        <div class="boxes">
-          <div class="box">
-            <img src="assets/imgs/planet-earth_color.png">
-            <h4>Missão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/lightbulb_color.png">
-            <h4>Visão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/growth_color.png">
-            <h4>Valores</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <section class="persona-teatro" id="persona">
-    <div class="persona-conteudo">
-      <h1 class="persona-titulo">
-        NOSSO SITE E<br>COMO FUNCIONA?
-      </h1>
-      
-      <p class="persona-texto">
-        Durante o processo de fabricação da cerveja, são necessários tanques de armazenamento para estocar o produto acabado e garantir que a qualidade do produto seja mantida e seu sabor não seja afetado. A medição de nível auxilia no monitoramento do nível do produto no interior do tanque, permitindo, assim, a otimização dos processos de enchimento e esvaziamento, bem como o controle confiável das bombas para o enchimento automatizado.
+  <!-- HEADER -->
+  <div class="header">
+    <div class="container">
+      <h1 class="titulo">Brew<span>Tech</span></h1>
+      <ul class="navbar">
+        <li class="agora">
+          <a href="#">Inicial</a>
+        </li>
+        <li>
+          <a href="simulador.html">Simulador</a>
+        </li>
+        <li>|</li>
+        <li>
+          <a href="login.html">Login</a>
+        </li>
+        <li>
+          <a href="cadastro.html">Cadastro</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="container">
+      <p class="banner-eyebrow">Monitoramento Industrial · Cervejaria</p>
+      <h2 class="banner-headline">
+        Controle o nível dos seus tanques <em>em tempo real</em>.
+      </h2>
+      <p class="banner-sub">
+        Acompanhe cada etapa da produção — fermentação, maturação e armazenamento — com alertas automáticos e histórico completo.
       </p>
+      <a href="simulador.html" class="banner-cta">Ver simulador</a>
+    </div>
+  </div>
 
-      <div class="persona-accordion-container">
-        
-        <div class="accordion-row">
-          <span>Como o sistema lida com a formação de espuma?</span>
-          <span class="accordion-icon">+</span>
-        </div>
-        
-        <div class="accordion-content">
-          <p>
-            A formação de espuma densa durante a fermentação é um dos maiores desafios técnicos. Nosso sistema utiliza algoritmos de filtragem de sinal no microcontrolador para ignorar os ecos falsos gerados pela superfície da espuma. 
-            <br><br>
-            Isso garante que os sensores leiam com precisão apenas a altura real do líquido (cerveja), evitando erros de leitura que poderiam interromper o processo produtivo ou causar transbordamentos na planta.
-          </p>
+  <!-- MISSÃO / VISÃO / VALORES -->
+  <div class="social">
+    <div class="container">
+      <div class="boxes">
+
+        <div class="box">
+          <div class="box-icone">🏭</div>
+          <h4>Missão</h4>
+          <p>Fornecer visibilidade total sobre os tanques de produção, reduzindo perdas por transbordamento ou falta de insumo e garantindo a consistência do produto final.</p>
         </div>
 
-        <div class="accordion-row">
-          <span>Segurança física e automação contra falhas</span>
-          <span class="accordion-icon">+</span>
+        <div class="box">
+          <div class="box-icone">📡</div>
+          <h4>Visão</h4>
+          <p>Ser a plataforma de referência em monitoramento de nível para cervejarias artesanais e industriais, integrando IoT, alertas e rastreabilidade em um único painel.</p>
         </div>
-        
-        <div class="accordion-content">
-          <p>
-            Além do monitoramento contínuo, a arquitetura integra chaves de nível capacitivas no topo dos tanques. Caso ocorra uma falha crítica na leitura principal, esses sensores atuam como uma trava física de segurança de resposta imediata, cortando a alimentação das bombas de entrada no mesmo instante para mitigar riscos de desperdício de insumos.
-          </p>
+
+        <div class="box">
+          <div class="box-icone">⚙️</div>
+          <h4>Valores</h4>
+          <p>Precisão nos dados, confiabilidade na operação e transparência para a equipe de produção. Cada leitura importa — da tina de mosturação ao tanque de envase.</p>
         </div>
-        
+
       </div>
     </div>
+  </div>
 
-    <div class="persona-imagem">
-      </div>
-  </section>
-  
-    <div class="footer">
-      <div class="container">
-        <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
-      </div>
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="container">
+      <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
     </div>
-  </body>
+  </div>
 
+</body>
 </html>
